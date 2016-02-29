@@ -6,7 +6,7 @@ function [streams,fileheader] = load_xdf(filename,varargin)
 % information covered by the XDF 1.0 specification is imported, plus any additional meta-data
 % associated with streams or with the container file itself.
 %
-% See https://github.com/sccn/xdf/ for more information on XDF.
+% See http://code.google.com/p/xdf/ for more information on XDF.
 %
 % The function supports several further features, such as compressed XDF archives, robust
 % time synchronization, support for breaks in the data, as well as some other defects.
@@ -145,8 +145,8 @@ function [streams,fileheader] = load_xdf(filename,varargin)
 %                                Contains portions of xml2struct Copyright (c) 2010, Wouter Falkena,
 %                                ASTI, TUDelft, 21-08-2010
 %
-%                                version 1.11
-LIBVERSION = '1.11';
+%                                version 1.12
+LIBVERSION = '1.12';
 
 % check inputs
 opts = cell2struct(varargin(2:2:end),varargin(1:2:end),2);
@@ -215,10 +215,9 @@ if ~have_mex
     fname = ['load_xdf_innerloop.' mexext];
     mex_url = ['https://github.com/sccn/xdf/releases/download/v',...
         LIBVERSION, '/', fname];
-    [this_path, this_name, this_ext] = fileparts(mfilename('fullpath'));
+    have_mex = true;
     try
-        have_mex = true;
-        websave(fullfile(this_path, fname), mex_url);
+        websave(fullfile(fileparts(mfilename('fullpath')), fname), mex_url);
     catch ME
         disp(['Unable to download the compiled binary version for your platform.',...
         ' Using the slow MATLAB code instead.']);
@@ -502,7 +501,7 @@ if opts.HandleJitterRemoval
                 segments(r).t_begin = temp(k).time_stamps(range(1));
                 segments(r).t_end = temp(k).time_stamps(range(2));
                 segments(r).duration = segments(r).t_end - segments(r).t_begin;
-                segments(r).effective_srate = (segments(r).num_samples-1)/ segments(r).duration;
+                segments(r).effective_srate = segments(r).num_samples / segments(r).duration;
             end
             
             % calculate the weighted mean sampling rate over all segments
